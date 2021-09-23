@@ -1,6 +1,6 @@
 from mimesis import Person, Address, Datetime
 from mimesis.builtins import RussiaSpecProvider
-from app import models
+import models
 import random
 
 ru = RussiaSpecProvider()

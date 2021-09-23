@@ -1,7 +1,21 @@
-from app import app
-from app import models
-from app import validators
+from flask import Flask
+from extensions import db, migrate
+from config import Config
 from flask import request, Response, jsonify
+import models, generate, validators
+
+def register_extensions(app):
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+def create_app(config):
+    app = Flask(__name__)
+    app.config.from_object(config)
+
+    register_extensions(app)
+    return app
+
+app = create_app(Config)
 
 # -----User------
 @app.route('/users', methods=['POST'])
@@ -173,3 +187,6 @@ def delete_email():
     models.Email.delete_email(requested_data['id'])
     response = Response('Email удален', 200, mimetype='application/json')
     return response
+
+
+app.run()
