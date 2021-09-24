@@ -7,9 +7,9 @@ class PhoneModel(db.Model):
     type = db.Column(db.Boolean)
     number = db.Column(db.String(11))
 
-    def __init__(self, user_id, type, number):
+    def __init__(self, user_id, type_, number):
         self.user_id = user_id
-        self.type = type
+        self.type = type_
         self.number = number
         
     def __repr__(self):
@@ -19,31 +19,35 @@ class PhoneModel(db.Model):
         return {'id': self.id, 'user_id': self.user_id,
         'type': self.type, 'number': self.number}
 
-    def add_phone(user_id, type, number):
-        new_phone = PhoneModel(user_id, type, number)
+    @classmethod
+    def add_phone(cls, user_id, type_, number):
+        new_phone = cls(user_id, type_, number)
         db.session.add(new_phone)
         db.session.commit()
 
-    def get_phone(id):
-        phone = PhoneModel.query.filter_by(id=id).first()
-        json = phone.json()
-        return json
+    @classmethod
+    def get_phone(cls, id_):
+        phone = cls.query.filter_by(id=id_).first()
+        return phone.json()
 
-    def get_all_phones(field=None, order="asc"):
+    @classmethod
+    def get_all_phones(cls, field=None, order="asc"):
         if(field != None):
-            json = [PhoneModel.json(phone) for phone in (PhoneModel.query.order_by(getattr(PhoneModel, field).asc())).all()] if order == "asc" else \
-            [PhoneModel.json(phone) for phone in (PhoneModel.query.order_by(getattr(PhoneModel, field).desc())).all()]
+            json = [cls.json(phone) for phone in (cls.query.order_by(getattr(cls, field).asc())).all()] if order == "asc" else \
+            [cls.json(phone) for phone in (cls.query.order_by(getattr(cls, field).desc())).all()]
         else:
-            json = [PhoneModel.json(phone) for phone in PhoneModel.query.all()]
+            json = [cls.json(phone) for phone in cls.query.all()]
         return json
 
-    def update_phone(id, user_id, type, number):
-        update_phone = PhoneModel.query.filter_by(id=id).first()
+    @classmethod
+    def update_phone(cls, id_, user_id, type_, number):
+        update_phone = cls.query.filter_by(id=id_).first()
         update_phone.user_id = user_id
-        update_phone.type = type
+        update_phone.type = type_
         update_phone.number = number
         db.session.commit()
 
-    def delete_phone(id):
-        deleted_phone = PhoneModel.query.filter_by(id=id).delete()
+    @classmethod
+    def delete_phone(cls, id_):
+        cls.query.filter_by(id=id_).delete()
         db.session.commit()
