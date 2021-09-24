@@ -1,5 +1,5 @@
 from flask import Flask
-from extensions import db, migrate
+from extensions import db, migrate, api
 from config import Config
 from flask import request, Response, jsonify
 import models, generate, validators
@@ -7,6 +7,8 @@ import models, generate, validators
 def register_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
+    api.init_app(app)
+
 
 def create_app(config):
     app = Flask(__name__)
