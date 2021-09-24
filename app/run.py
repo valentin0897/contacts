@@ -2,7 +2,10 @@ from flask import Flask
 from extensions import db, migrate, api
 from config import Config
 from flask import request, Response, jsonify
-import models, generate, validators
+from models.email import EmailModel
+from models.phone import PhoneModel
+from models.user import UserModel
+import generate, validators
 
 def register_extensions(app):
     db.init_app(app)
@@ -24,16 +27,16 @@ app = create_app(Config)
 def get_users():
     reqested_data = request.get_json()
     if "field" in reqested_data:
-        json = jsonify({'Users': models.User.get_all_users(field=reqested_data['field'],
+        json = jsonify({'Users': UserModel.get_all_users(field=reqested_data['field'],
         order=reqested_data['order'])})
     else:
-        json = jsonify({'Users': models.User.get_all_users()})
+        json = jsonify({'Users': UserModel.get_all_users()})
     return json
 
 @app.route('/user', methods=['POST'])
 def get_user_by_id():
     requested_data = request.get_json()
-    user = models.User.get_user(requested_data['id'])
+    user = UserModel.get_user(requested_data['id'])
     json = jsonify(user)
     return json 
 
@@ -45,20 +48,20 @@ def add_user():
     requested_data['avatar_path'], requested_data['sex'], 
     requested_data['birthday'], requested_data['address'])):
 
-        new_user = models.User.add_user(requested_data['fio'], requested_data['avatar_path'],
+        new_user = UserModel.add_user(requested_data['fio'], requested_data['avatar_path'],
         requested_data['sex'], requested_data['birthday'],
         requested_data['address'])
 
         if("phones" in requested_data):
             for phone in requested_data['phones']:
                 if(validators.check_phone(phone['number'])):
-                    models.Phone.add_phone(new_user.id,
+                    PhoneModel.add_phone(new_user.id,
                     phone['type'], phone['number'])
                 
         if("emails" in requested_data):
             for email in requested_data['emails']:
                 if(validators.check_email(email['email'])):
-                    models.Email.add_email(new_user.id,
+                    EmailModel.add_email(new_user.id,
                     email['type'], email['email'])
         
         response = Response('Пользователь добавлен', 201, mimetype='application/json')
@@ -73,7 +76,7 @@ def update_user():
     if(validators.check_user(requested_data['fio'],
     requested_data['avatar_path'], requested_data['sex'], 
     requested_data['birthday'], requested_data['address'])):
-        models.User.update_user(requested_data['id'], requested_data['fio'], requested_data['avatar_path'],
+        UserModel.update_user(requested_data['id'], requested_data['fio'], requested_data['avatar_path'],
         requested_data['sex'], requested_data['birthday'],
         requested_data['address'])
         response = Response('Пользователь обновлен', 202, mimetype='application/json')
@@ -85,7 +88,7 @@ def update_user():
 @app.route('/user', methods=['DELETE'])
 def delete_user():
     requested_data = request.get_json()
-    models.User.delete_user(requested_data['id'])
+    UserModel.delete_user(requested_data['id'])
     response = Response('Пользователь удален', 200, mimetype='application/json')
     return response
 
@@ -94,16 +97,16 @@ def delete_user():
 def get_phones():
     reqested_data = request.get_json()
     if "field" in reqested_data:
-        json = jsonify({'Phones': models.Phone.get_all_phones(field=reqested_data['field'],
+        json = jsonify({'Phones': PhoneModel.get_all_phones(field=reqested_data['field'],
         order=reqested_data['order'])})
     else:
-        json = jsonify({'Phones': models.Phone.get_all_phones()})
+        json = jsonify({'Phones': PhoneModel.get_all_phones()})
     return json
 
 @app.route('/phone', methods=['POST'])
 def get_phone():
     requested_data = request.get_json()
-    phone = models.Phone.get_phone(requested_data['id'])
+    phone = PhoneModel.get_phone(requested_data['id'])
     json = jsonify(phone)
     return json
 
@@ -111,7 +114,7 @@ def get_phone():
 def add_phone():
     requested_data = request.get_json()
     if(validators.check_phone(requested_data['number'])):
-        models.Phone.add_phone(requested_data['user_id'],
+        PhoneModel.add_phone(requested_data['user_id'],
         requested_data['type'], requested_data['number'])
         response = Response('Телефон добавлен', 201, mimetype='application/json')
         return response
@@ -123,7 +126,7 @@ def add_phone():
 def update_phone():
     requested_data = request.get_json()
     if(validators.check_phone(requested_data['number'])):
-        models.Phone.update_phone(requested_data['id'],
+        PhoneModel.update_phone(requested_data['id'],
         requested_data['user_id'], requested_data['type'], requested_data['number'])
         response = Response('Телефон обновлен', 202, mimetype='application/json')
         return response
@@ -134,7 +137,7 @@ def update_phone():
 @app.route('/phone', methods=['DELETE'])
 def delete_phone():
     requested_data = request.get_json()
-    models.Phone.delete_phone(requested_data['id'])
+    PhoneModel.delete_phone(requested_data['id'])
     response = Response('Телефон удален', 200, mimetype='application/json')
     return response
 
@@ -144,16 +147,16 @@ def delete_phone():
 def get_emails():
     reqested_data = request.get_json()
     if "field" in reqested_data:
-        json = jsonify({'Emails': models.Email.get_all_emails(field=reqested_data['field'],
+        json = jsonify({'Emails': EmailModel.get_all_emails(field=reqested_data['field'],
         order=reqested_data['order'])})
     else:
-        json = jsonify({'Emails': models.Email.get_all_emails()})
+        json = jsonify({'Emails': EmailModel.get_all_emails()})
     return json
 
 @app.route('/email', methods=['POST'])
 def get_email():
     requested_data = request.get_json()
-    email = models.Email.get_email(requested_data['id'])
+    email = EmailModel.get_email(requested_data['id'])
     json = jsonify(email)
     return json
 
@@ -161,7 +164,7 @@ def get_email():
 def add_email():
     requested_data = request.get_json()
     if(validators.check_email(requested_data['email'])):
-        models.Email.add_email(requested_data['user_id'],
+        EmailModel.add_email(requested_data['user_id'],
         requested_data['type'], requested_data['email'])
         response = Response('Email добавлен', 201, mimetype='application/json')
         return response
@@ -174,7 +177,7 @@ def add_email():
 def update_email():
     requested_data = request.get_json()
     if(validators.check_email(requested_data['email'])):
-        models.Email.update_email(requested_data['id'],
+        EmailModel.update_email(requested_data['id'],
         requested_data['user_id'], requested_data['type'], requested_data['email'])
         response = Response('Email обновлен', 202, mimetype='application/json')
         return response
@@ -186,7 +189,7 @@ def update_email():
 @app.route('/email', methods=['DELETE'])
 def delete_email():
     requested_data = request.get_json()
-    models.Email.delete_email(requested_data['id'])
+    EmailModel.delete_email(requested_data['id'])
     response = Response('Email удален', 200, mimetype='application/json')
     return response
 
