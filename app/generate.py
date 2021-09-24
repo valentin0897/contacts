@@ -46,7 +46,7 @@ def add_random_users_to_db(amount):
             models.Phone.add_phone(new_user.id, phone['type'], phone['number'])
         rand_amount_emails = random.randint(1, 3)
         for email in create_random_emails(rand_amount_emails):
-            models.Email.add_email(new_user.id, email['type'], email['email'])
+            models.Email.add_email_to_db(new_user.id, email['type'], email['email'])
         print(user)
         
 

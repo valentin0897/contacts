@@ -61,7 +61,7 @@ def add_user():
         if("emails" in requested_data):
             for email in requested_data['emails']:
                 if(validators.check_email(email['email'])):
-                    EmailModel.add_email(new_user.id,
+                    EmailModel.add_email_to_db(new_user.id,
                     email['type'], email['email'])
         
         response = Response('Пользователь добавлен', 201, mimetype='application/json')
@@ -156,7 +156,7 @@ def get_emails():
 @app.route('/email', methods=['POST'])
 def get_email():
     requested_data = request.get_json()
-    email = EmailModel.get_email(requested_data['id'])
+    email = EmailModel.get_email_by_id(requested_data['id'])
     json = jsonify(email)
     return json
 
@@ -164,7 +164,7 @@ def get_email():
 def add_email():
     requested_data = request.get_json()
     if(validators.check_email(requested_data['email'])):
-        EmailModel.add_email(requested_data['user_id'],
+        EmailModel.add_email_to_db(requested_data['user_id'],
         requested_data['type'], requested_data['email'])
         response = Response('Email добавлен', 201, mimetype='application/json')
         return response
