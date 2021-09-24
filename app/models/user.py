@@ -27,27 +27,30 @@ class UserModel(db.Model):
         'avatar_path': self.avatar_path, 'sex': self.sex,
         'birthday': self.birthday, 'address': self.address}
     
-    def add_user(fio, avatar_path, sex, birthday, address):
-        new_user = UserModel(fio, avatar_path, sex, birthday, address)
+    @classmethod
+    def add_user(cls, fio, avatar_path, sex, birthday, address):
+        new_user = cls(fio, avatar_path, sex, birthday, address)
         db.session.add(new_user)
         db.session.commit()
         return new_user
 
-    def get_user(id):
-        user = UserModel.query.filter_by(id=id).first()
-        json = user.json()
-        return json
+    @classmethod
+    def get_user(cls, id_):
+        user = cls.query.filter_by(id=id_).first()
+        return user.json()
 
-    def get_all_users(field=None, order="asc"):
+    @classmethod
+    def get_all_users(cls, field=None, order="asc"):
         if(field != None):
-            json = [UserModel.json(user) for user in (UserModel.query.order_by(getattr(UserModel, field).asc())).all()] if order == "asc" else \
-            [UserModel.json(user) for user in (UserModel.query.order_by(getattr(UserModel, field).desc())).all()]
+            json = [cls.json(user) for user in (cls.query.order_by(getattr(cls, field).asc())).all()] if order == "asc" else \
+            [cls.json(user) for user in (cls.query.order_by(getattr(cls, field).desc())).all()]
         else:
-            json = [UserModel.json(user) for user in UserModel.query.all()]
+            json = [cls.json(user) for user in cls.query.all()]
         return json
 
-    def update_user(id, fio, avatar_path, sex, birthday, address):
-        update_user = UserModel.query.filter_by(id=id).first()
+    @classmethod
+    def update_user(cls, id_, fio, avatar_path, sex, birthday, address):
+        update_user = cls.query.filter_by(id=id_).first()
         update_user.fio = fio
         update_user.avatar_path = avatar_path
         update_user.sex = sex
@@ -55,6 +58,7 @@ class UserModel(db.Model):
         update_user.address = address
         db.session.commit()
 
-    def delete_user(id):
-        deleted_user = UserModel.query.filter_by(id=id).delete()
+    @classmethod
+    def delete_user(cls, id_):
+        cls.query.filter_by(id=id_).delete()
         db.session.commit()
