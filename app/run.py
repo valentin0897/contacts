@@ -26,9 +26,8 @@ app = create_app(Config)
 @app.route('/users', methods=['POST'])
 def get_users():
     reqested_data = request.get_json()
-    if "field" in reqested_data:
-        json = jsonify({'Users': UserModel.get_all_users(field=reqested_data['field'],
-        order=reqested_data['order'])})
+    if "sort_by" in reqested_data:
+        json = jsonify({'Users': UserModel.get_all_users(sort_by=reqested_data['sort_by'])})
     else:
         json = jsonify({'Users': UserModel.get_all_users()})
     return json
@@ -96,9 +95,8 @@ def delete_user():
 @app.route('/phones', methods=['POST'])
 def get_phones():
     reqested_data = request.get_json()
-    if "field" in reqested_data:
-        json = jsonify({'Phones': PhoneModel.get_all_phones(field=reqested_data['field'],
-        order=reqested_data['order'])})
+    if "sort_by" in reqested_data:
+        json = jsonify({'Phones': PhoneModel.get_all_phones(sort_by=reqested_data['sort_by'])})
     else:
         json = jsonify({'Phones': PhoneModel.get_all_phones()})
     return json
@@ -146,9 +144,8 @@ def delete_phone():
 @app.route('/emails', methods=['POST'])
 def get_emails():
     reqested_data = request.get_json()
-    if "field" in reqested_data:
-        json = jsonify({'Emails': EmailModel.get_all_emails(field=reqested_data['field'],
-        order=reqested_data['order'])})
+    if "sort_by" in reqested_data:
+        json = jsonify({'Emails': EmailModel.get_all_emails(sort_by=reqested_data["sort_by"])})
     else:
         json = jsonify({'Emails': EmailModel.get_all_emails()})
     return json

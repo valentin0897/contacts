@@ -1,4 +1,5 @@
 from extensions import db
+from sqlalchemy import asc, desc
 
 class PhoneModel(db.Model):
     __tablename__ = 'phone'
@@ -31,10 +32,14 @@ class PhoneModel(db.Model):
         return phone.json()
 
     @classmethod
-    def get_all_phones(cls, field=None, order="asc"):
-        if(field != None):
-            json = [cls.json(phone) for phone in (cls.query.order_by(getattr(cls, field).asc())).all()] if order == "asc" else \
-            [cls.json(phone) for phone in (cls.query.order_by(getattr(cls, field).desc())).all()]
+    def get_all_phones(cls, sort_by=None):
+        order_funcs = {
+        "asc": asc, 
+        "desc": desc
+        }
+        if sort_by:
+            field, order = sort_by.split('.')
+            json = [cls.json(phone) for phone in (cls.query.order_by(order_funcs[order](field))).all()]
         else:
             json = [cls.json(phone) for phone in cls.query.all()]
         return json

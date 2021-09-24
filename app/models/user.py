@@ -1,4 +1,5 @@
 from extensions import db
+from sqlalchemy import asc, desc
 
 class UserModel(db.Model):
     __tablename__ = 'user'
@@ -40,10 +41,14 @@ class UserModel(db.Model):
         return user.json()
 
     @classmethod
-    def get_all_users(cls, field=None, order="asc"):
-        if(field != None):
-            json = [cls.json(user) for user in (cls.query.order_by(getattr(cls, field).asc())).all()] if order == "asc" else \
-            [cls.json(user) for user in (cls.query.order_by(getattr(cls, field).desc())).all()]
+    def get_all_users(cls, sort_by):
+        order_funcs = {
+        "asc": asc, 
+        "desc": desc
+        }
+        if sort_by:
+            field, order = sort_by.split('.')
+            json = [cls.json(email) for email in (cls.query.order_by(order_funcs[order](field))).all()]
         else:
             json = [cls.json(user) for user in cls.query.all()]
         return json

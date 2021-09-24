@@ -1,4 +1,5 @@
 from extensions import db
+from sqlalchemy import asc, desc
 
 class EmailModel(db.Model):
     __tablename__ = 'email'
@@ -32,10 +33,14 @@ class EmailModel(db.Model):
         return email.json()
     
     @classmethod
-    def get_all_emails(cls, field=None, order="asc"):
-        if(field != None):
-            json = [cls.json(email) for email in (cls.query.order_by(getattr(cls, field).asc())).all()] if order == "asc" else \
-            [cls.json(email) for email in (cls.query.order_by(getattr(cls, field).desc())).all()]
+    def get_all_emails(cls, sort_by=None):
+        order_funcs = {
+        "asc": asc, 
+        "desc": desc
+        }
+        if sort_by:
+            field, order = sort_by.split('.')
+            json = [cls.json(email) for email in (cls.query.order_by(order_funcs[order](field))).all()]
         else:
             json = [cls.json(email) for email in cls.query.all()]
         return json
