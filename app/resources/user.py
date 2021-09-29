@@ -71,6 +71,3 @@ class UserList(Resource):
         else:
             json = jsonify({'Users': UserModel.get_all_users()})
         return json
-
-api.add_resource(User, "/user")
-api.add_resource(UserList, "/users")

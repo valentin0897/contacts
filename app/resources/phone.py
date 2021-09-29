@@ -48,6 +48,3 @@ class PhoneList(Resource):
         else:
             json = jsonify({'Phones': PhoneModel.get_all_phones()})
         return json
-
-api.add_resource(Phone, "/phone")
-api.add_resource(PhoneList, "/phones")

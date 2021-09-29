@@ -51,6 +51,3 @@ class EmailList(Resource):
         else:
             json = jsonify({'Emails': EmailModel.get_all_emails()})
         return json
-
-api.add_resource(Email, "/email")
-api.add_resource(EmailList, "/emails")
