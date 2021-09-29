@@ -45,6 +45,8 @@ PyYAML = "*"
 SQLAlchemy = "*"
 Werkzeug = "*"
 uWSGI = "*"
+marshmallow-sqlalchemy = "*"
+flask-marshmallow = "*"
 
 [dev-packages]
 

@@ -1,5 +1,5 @@
 from flask import Flask
-from extensions import db, migrate, api
+from extensions import db, migrate, api, ma
 from config import Config
 from resources.email import Email, EmailList
 from resources.phone import Phone, PhoneList
@@ -9,6 +9,7 @@ import generate, validators
 def register_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
+    ma.init_app(app)
     api.init_app(app)
 
 
