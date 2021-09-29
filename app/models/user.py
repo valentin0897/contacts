@@ -4,7 +4,7 @@ from sqlalchemy import asc, desc
 class UserModel(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    fio = db.Column(db.String(64), index=True, nullable=False)
+    fio = db.Column(db.String(64), nullable=False)
     avatar_path = db.Column(db.String(260))
     sex = db.Column(db.String(1))
     birthday = db.Column(db.Date())

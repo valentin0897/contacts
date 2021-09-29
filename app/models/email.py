@@ -6,8 +6,8 @@ class EmailModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    type = db.Column(db.Boolean)
-    email = db.Column(db.String(320))
+    type = db.Column(db.Boolean, nullable=False)
+    email = db.Column(db.String(320), nullable=False)
 
     def __init__(self, user_id, type_, email):
         self.user_id = user_id
