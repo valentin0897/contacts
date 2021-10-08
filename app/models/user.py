@@ -3,6 +3,7 @@ from sqlalchemy import asc, desc
 
 class UserModel(db.Model):
     __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
     fio = db.Column(db.String(64), nullable=False)
     avatar_path = db.Column(db.String(260))
@@ -27,18 +28,15 @@ class UserModel(db.Model):
         return {'id': self.id, 'fio': self.fio,
         'avatar_path': self.avatar_path, 'sex': self.sex,
         'birthday': self.birthday, 'address': self.address}
-    
-    @classmethod
-    def add_user(cls, fio, avatar_path, sex, birthday, address):
-        new_user = cls(fio, avatar_path, sex, birthday, address)
-        db.session.add(new_user)
+
+    def save(self):
+        db.session.add(self)
         db.session.commit()
-        return new_user
 
     @classmethod
-    def get_user(cls, id_):
+    def get_user_by_id(cls, id_):
         user = cls.query.filter_by(id=id_).first()
-        return user.json()
+        return user
 
     @classmethod
     def get_all_users(cls, sort_by):
@@ -48,22 +46,11 @@ class UserModel(db.Model):
         }
         if sort_by:
             field, order = sort_by.split('.')
-            json = [cls.json(email) for email in (cls.query.order_by(order_funcs[order](field))).all()]
+            users = cls.query.order_by(order_funcs[order](field)).all()
         else:
-            json = [cls.json(user) for user in cls.query.all()]
-        return json
+            users = cls.query.all()
+        return users
 
-    @classmethod
-    def update_user(cls, id_, fio, avatar_path, sex, birthday, address):
-        update_user = cls.query.filter_by(id=id_).first()
-        update_user.fio = fio
-        update_user.avatar_path = avatar_path
-        update_user.sex = sex
-        update_user.birthday = birthday
-        update_user.address = address
-        db.session.commit()
-
-    @classmethod
-    def delete_user(cls, id_):
-        cls.query.filter_by(id=id_).delete()
+    def delete(self):
+        db.session.delete(self)
         db.session.commit()
