@@ -1,53 +1,53 @@
 from flask_restful import Resource
 from models.email import EmailModel
 from flask import Response, request, jsonify
-from extensions import api
 import validators
+from schemas.email import EmailSchema
+
+email_schema = EmailSchema(partial=True)
+email_list_schema = EmailSchema(many=True)
 
 class Email(Resource):
 
     def post(self):
         requested_data = request.get_json()
         email = EmailModel.get_email_by_id(requested_data['id'])
-        json = jsonify(email)
-        return json
+        return email_schema.dump(email), 200
 
     def put(self):
-        requested_data = request.get_json()
-        if(validators.check_email(requested_data['email'])):
-            EmailModel.add_email_to_db(requested_data['user_id'],
-            requested_data['type'], requested_data['email'])
-            response = Response('Email добавлен', 201, mimetype='application/json')
-            return response
+        email = email_schema.load(request.get_json())
+        if(validators.check_email(email.email)):
+            email.save()
+            return {"message": "Email добавлен"}, 201
         else:
-            response = Response('Email не добавлен', 400, mimetype='application/json')
-            return response
+            return {"message": "Email не добавлен"}, 400
 
 
     def patch(self):
         requested_data = request.get_json()
-        if(validators.check_email(requested_data['email'])):
-            EmailModel.update_email(requested_data['id'],
-            requested_data['user_id'], requested_data['type'], requested_data['email'])
-            response = Response('Email обновлен', 202, mimetype='application/json')
-            return response
+        email = EmailModel.get_email_by_id(requested_data['id'])
+        email.user_id = requested_data["user_id"]
+        email.category = requested_data["category"]
+        email.email = requested_data["email"]
+        if(validators.check_email(email.email)):
+            email.save()
+            return {"message": "Email обновлен"}, 202
         else:
-            response = Response('Email не обновлен', 400, mimetype='application/json')
-            return response
+            return {"message": "Email не обновлен"}, 400
 
 
     def delete(self):
         requested_data = request.get_json()
-        EmailModel.delete_email(requested_data['id'])
-        response = Response('Email удален', 200, mimetype='application/json')
-        return response
+        email = EmailModel.get_email_by_id(requested_data['id'])
+        email.delete()
+        return {"message": "Email удален"}, 200
 
 class EmailList(Resource):
     
     def post(self):
         reqested_data = request.get_json()
         if "sort_by" in reqested_data:
-            json = jsonify({'Emails': EmailModel.get_all_emails(sort_by=reqested_data["sort_by"])})
+            emails = EmailModel.get_all_emails(sort_by=reqested_data["sort_by"])
         else:
-            json = jsonify({'Emails': EmailModel.get_all_emails()})
-        return json
+            emails = EmailModel.get_all_emails()
+        return email_list_schema.dump(emails)

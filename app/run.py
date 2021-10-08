@@ -31,4 +31,9 @@ def create_app(config):
 
 if __name__ == "__main__":
     app = create_app(Config)
+
+    @app.before_first_request
+    def create_tables():
+        db.create_all() 
+
     app.run()
