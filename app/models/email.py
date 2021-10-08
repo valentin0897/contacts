@@ -9,13 +9,6 @@ class EmailModel(db.Model):
     category = db.Column(db.Boolean, nullable=False)
     email = db.Column(db.String(320), nullable=False)
 
-    def __repr__(self):
-        return f'EmailModel: {self.user_id}, {self.category}, {self.email}'
-
-    def json(self):
-        return {'id': self.id, 'user_id': self.user_id,
-        'category': self.category, 'email': self.email}
-
     def save(self):
         db.session.add(self)
         db.session.commit()

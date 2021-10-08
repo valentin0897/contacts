@@ -1,4 +1,3 @@
-from unicodedata import category
 from extensions import ma
 from models.email import EmailModel
 

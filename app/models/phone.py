@@ -9,18 +9,6 @@ class PhoneModel(db.Model):
     category = db.Column(db.Boolean, nullable=False)
     number = db.Column(db.String(11), nullable=False)
 
-    def __init__(self, user_id, category, number):
-        self.user_id = user_id
-        self.category = category
-        self.number = number
-        
-    def __repr__(self):
-        return f'PhoneModel: {self.user_id}, {self.category}, {self.number}'
-
-    def json(self):
-        return {'id': self.id, 'user_id': self.user_id,
-        'category': self.category, 'number': self.number}
-
     def save(self):
         db.session.add(self)
         db.session.commit()

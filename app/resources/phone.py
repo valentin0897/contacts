@@ -1,8 +1,7 @@
 from flask_restful import Resource
-from flask import request, Response, jsonify
+from flask import request
 from schemas.phone import PhoneSchema
 from models.phone import PhoneModel
-from extensions import api
 import validators
 
 phone_schema = PhoneSchema(partial=True)

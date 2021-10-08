@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from models.email import EmailModel
-from flask import Response, request, jsonify
+from flask import request
 import validators
 from schemas.email import EmailSchema
 

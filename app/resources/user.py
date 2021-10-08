@@ -1,12 +1,11 @@
 from flask_restful import Resource
-from flask import request, jsonify, Response
+from flask import request
 from schemas.user import UserSchema
 from schemas.phone import PhoneSchema
 from schemas.email import EmailSchema
 from models.user import UserModel
 from models.phone import PhoneModel
 from models.email import EmailModel
-from extensions import api
 import validators
 
 user_schema = UserSchema(partial=True)

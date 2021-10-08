@@ -13,22 +13,6 @@ class UserModel(db.Model):
     phones = db.relationship('PhoneModel', backref='user', lazy='dynamic')
     emails = db.relationship('EmailModel', backref='user', lazy='dynamic')
 
-    def __init__(self, fio, avatar_path, sex, birthday, address):
-        self.fio = fio
-        self.avatar_path = avatar_path
-        self.sex = sex
-        self.birthday = birthday
-        self.address = address
-
-    def __repr__(self):
-        return f"User:{self.id} {self.fio}, {self.avatar_path}, {self.sex}, \
-         {self.birthday}, {self.address}"
-
-    def json(self):
-        return {'id': self.id, 'fio': self.fio,
-        'avatar_path': self.avatar_path, 'sex': self.sex,
-        'birthday': self.birthday, 'address': self.address}
-
     def save(self):
         db.session.add(self)
         db.session.commit()
