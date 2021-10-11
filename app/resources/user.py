@@ -1,7 +1,6 @@
 from flask_restful import Resource
 from flask import request
 from marshmallow.exceptions import ValidationError
-from app.resources.email import EMAIL_NOT_FOUND
 from schemas.user import UserSchema
 from schemas.phone import PhoneSchema
 from schemas.email import EmailSchema
@@ -85,7 +84,7 @@ class User(Resource):
             user.delete()
             return {"message": USER_DELETED}, 201
         else:
-            return {"message": EMAIL_NOT_FOUND}, 404
+            return {"message": USER_NOT_FOUND}, 404
 
 
 class UserList(Resource):

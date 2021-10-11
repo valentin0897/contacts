@@ -1,10 +1,8 @@
 from flask_restful import Resource
 from flask import request
 from marshmallow.exceptions import ValidationError
-from app.resources.email import EMAIL_NOT_FOUND
 from schemas.phone import PhoneSchema
 from models.phone import PhoneModel
-import validators
 
 phone_schema = PhoneSchema(partial=True)
 phone_list_schema = PhoneSchema(many=True)
@@ -53,7 +51,7 @@ class Phone(Resource):
             phone.delete()
             return {"message": PHONE_DELETED}, 201
         else:
-            return {"message": EMAIL_NOT_FOUND}, 404
+            return {"message": PHONE_NOT_FOUND}, 404
 
 class PhoneList(Resource):
     

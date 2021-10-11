@@ -15,7 +15,7 @@ class PhoneSchema(ma.SQLAlchemySchema):
     id = ma.auto_field(validate=validate.Range(min=1))
     user_id = ma.auto_field(validate=validate.Range(min=1))
     category = ma.auto_field()
-    number = ma.auto_field(validate.Length(equal=11))
+    number = ma.auto_field(validate=validate.Length(equal=11))
 
     @validates("id")
     def validate_phone_id(self, value):

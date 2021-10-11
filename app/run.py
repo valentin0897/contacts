@@ -4,7 +4,6 @@ from config import Config
 from resources.email import Email, EmailList
 from resources.phone import Phone, PhoneList
 from resources.user import User, UserList
-# import generate, validators
 
 def register_extensions(app):
     db.init_app(app)
