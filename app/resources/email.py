@@ -18,7 +18,7 @@ class Email(Resource):
         id_ = request.get_json()['id']
         errors = email_schema.validate({"id": id_})
         if errors:
-            return {"message": EMAIL_NOT_FOUND, "errors": errors}, 400
+            return {"message": EMAIL_NOT_FOUND, "errors": errors}, 404
         else:
             email = EmailModel.get_email_by_id(id_)
             return email_schema.dump(email), 200
@@ -27,7 +27,7 @@ class Email(Resource):
         try:
             email = email_schema.load(request.get_json())
         except ValidationError as errors:
-            return {"message": EMAIL_ERROR_INSERTING, "errors": errors.messages}
+            return {"message": EMAIL_ERROR_INSERTING, "errors": errors.messages}, 400
 
         email.save()
         return email_schema.dump(email), 201
@@ -36,7 +36,7 @@ class Email(Resource):
         requested_data = request.get_json()
         errors = email_schema.validate(requested_data)
         if errors:
-            return {"message": EMAIL_ERROR_UPDATING, "errors": errors}
+            return {"message": EMAIL_ERROR_UPDATING, "errors": errors}, 400
 
         email = EmailModel.get_email_by_id(requested_data['id'])
         email.user_id = requested_data["user_id"]
