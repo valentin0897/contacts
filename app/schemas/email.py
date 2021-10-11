@@ -17,6 +17,12 @@ class EmailSchema(ma.SQLAlchemySchema):
     category = ma.auto_field()
     email = ma.auto_field(validate=validate.Email())
 
+    @validates("id")
+    def validate_email_id(self, value):
+        is_email_exist = EmailModel.get_email_by_id(value)
+        if not(is_email_exist):
+            raise ValidationError("There is no email with that id")
+
     @validates("user_id")
     def validate_user_id(self, value):
         is_user_exist = UserModel.get_user_by_id(value)
